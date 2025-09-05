@@ -6,8 +6,9 @@ import com.iafenvoy.tieable.item.block.entity.TiedBlockEntity;
 import com.iafenvoy.tieable.render.model.CubeModel;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
@@ -16,12 +17,10 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.state.property.Properties;
+import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 
 @Environment(EnvType.CLIENT)
 public class TiedBlockRenderer implements BlockEntityRenderer<TiedBlockEntity>, DynamicItemRenderer {
@@ -36,42 +35,33 @@ public class TiedBlockRenderer implements BlockEntityRenderer<TiedBlockEntity>, 
             new Vec3d(0, 1, 1),
             new Vec3d(1, 1, 1),
     };
+    private final MinecraftClient client = MinecraftClient.getInstance();
     private final CubeModel model = new CubeModel(CubeModel.getTexturedModelData().createModel());
+
+    private static <T extends Comparable<T>> BlockState copyProperty(Property<T> property, BlockState from, BlockState to) {
+        return to.withIfExists(property, from.get(property));
+    }
 
     @Override
     public void render(TiedBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         matrices.push();
         BlockState state = entity.getCachedState();
-        if (state.contains(Properties.AXIS)) {
-            Direction.Axis axis = state.get(Properties.AXIS);
-            switch (axis) {
-                case X -> {
-                    matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(90));
-                    matrices.translate(0, -1, 0);
-                }
-                case Z -> {
-                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
-                    matrices.translate(0, 0, -1);
-                }
-            }
-        }
-        this.render(entity.getStoredBlock(), matrices, vertexConsumers, light, overlay);
+        this.render(state.getProperties().stream().reduce(entity.getStoredBlock().getDefaultState(), (p, c) -> copyProperty(c, state, p), (a, b) -> a), entity.getPos(), matrices, vertexConsumers, light, overlay);
         matrices.pop();
     }
 
     @Override
     public void render(ItemStack stack, ModelTransformationMode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        this.render(TiedBlockItem.readStoredBlock(stack), matrices, vertexConsumers, light, overlay);
+        if (this.client.cameraEntity != null)
+            this.render(TiedBlockItem.readStoredBlock(stack).getDefaultState(), this.client.cameraEntity.getBlockPos(), matrices, vertexConsumers, light, overlay);
     }
 
-    private void render(Block storedBlock, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+    private void render(BlockState state, BlockPos pos, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         matrices.push();
         this.renderBlock(matrices, vertexConsumers, light, overlay);
-        matrices.scale(2, 2, 2);
-        matrices.translate(0.125, -0.0625, 0.125);
-        ItemStack stack = new ItemStack(storedBlock);
+        matrices.scale(0.5F, 0.5F, 0.5F);
         for (Vec3d offset : OFFSETS)
-            this.renderSingle(stack, offset, matrices, vertexConsumers, MinecraftClient.getInstance().world);
+            this.renderSingle(state, pos, offset, matrices, vertexConsumers);
         matrices.pop();
     }
 
@@ -81,11 +71,19 @@ public class TiedBlockRenderer implements BlockEntityRenderer<TiedBlockEntity>, 
         matrices.pop();
     }
 
-    private void renderSingle(ItemStack stack, Vec3d offset, MatrixStack matrices, VertexConsumerProvider vertexConsumers, World world) {
+    private void renderSingle(BlockState state, BlockPos pos, Vec3d offset, MatrixStack matrices, VertexConsumerProvider vertexConsumers) {
         matrices.push();
-        matrices.translate(offset.x * 0.25, offset.y * 0.25, offset.z * 0.25);
-        matrices.scale(0.999F, 0.999F, 0.999F);
-        MinecraftClient.getInstance().getItemRenderer().renderItem(stack, ModelTransformationMode.GROUND, 0xFFFFFF, OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, world, 0);
+        float f = 0.0005F;
+        matrices.translate(offset.x + f, offset.y + f, offset.z + f);
+        matrices.scale(1 - f * 2, 1 - f * 2, 1 - f * 2);
+        this.client.getBlockRenderManager().renderBlockAsEntity(state, matrices, vertexConsumers, 0xFFFFFF, OverlayTexture.DEFAULT_UV);
+        if (state.getBlock() instanceof BlockEntityProvider provider) {
+            BlockEntity blockEntity = provider.createBlockEntity(pos, state);
+            if (blockEntity != null) {
+                blockEntity.setWorld(this.client.world);
+                this.client.getBlockEntityRenderDispatcher().render(blockEntity, 1, matrices, vertexConsumers);
+            }
+        }
         matrices.pop();
     }
 }
