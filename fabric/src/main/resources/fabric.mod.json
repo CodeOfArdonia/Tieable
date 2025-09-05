@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "tieable",
+  "version": "${version}",
+  "name": "Tieable",
+  "description": "Add universal tied blocks for decoration.",
+  "authors": [
+    "IAFEnvoy"
+  ],
+  "contact": {
+    "sources": "https://github.com/IAFEnvoy/Tieable",
+    "issues": "https://github.com/IAFEnvoy/Tieable/issues"
+  },
+  "license": "All Right Reserved",
+  "icon": "assets/tieable/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.iafenvoy.tieable.fabric.TieableFabric"
+    ],
+    "client": [
+      "com.iafenvoy.tieable.fabric.TieableFabricClient"
+    ]
+  },
+  "mixins": [
+    "tieable.mixins.json"
+  ],
+  "depends": {
+    "minecraft": "~1.20.1",
+    "architectury": ">=9.2.14",
+    "fabric-api": "*"
+  }
+}

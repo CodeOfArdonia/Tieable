@@ -1,0 +1,5 @@
+{
+  "block.tieable.tied": "Tied Block",
+  "block.tieable.tied_pillar": "Tied Block",
+  "item.tieable.tied.tooltip": "Stored Block: %s"
+}

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "tieable:block/tied"
+    }
+  }
+}
