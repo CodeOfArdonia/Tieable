@@ -12,7 +12,7 @@
     "issues": "https://github.com/IAFEnvoy/Tieable/issues"
   },
   "license": "All Right Reserved",
-  "icon": "assets/tieable/icon.png",
+  "icon": "logo.png",
   "environment": "*",
   "entrypoints": {
     "main": [
