@@ -5,8 +5,6 @@ import com.iafenvoy.tieable.Tieable;
 import com.iafenvoy.tieable.item.TiedBlockItem;
 import com.iafenvoy.tieable.registry.TieableBlocks;
 import com.iafenvoy.tieable.registry.tag.TieableItemTags;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -15,7 +13,6 @@ import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
 import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
@@ -39,15 +36,8 @@ public class TiedBlockRecipe implements CraftingRecipe {
     @Override
     public ItemStack craft(RecipeInputInventory inventory, DynamicRegistryManager registryManager) {
         ItemStack stack = inventory.getStack(0);
-        if (stack.getItem() instanceof BlockItem blockItem)
-            return TiedBlockItem.writeBlockToNbt(new ItemStack(selectBlock(blockItem.getBlock())), blockItem.getBlock());
+        if (stack.getItem() instanceof BlockItem blockItem) return TiedBlockItem.createStack(blockItem.getBlock());
         return ItemStack.EMPTY;
-    }
-
-    private static Block selectBlock(Block original) {
-        BlockState state = original.getDefaultState();
-        if (state.contains(Properties.AXIS)) return TieableBlocks.TIED_PILLAR.get();
-        return TieableBlocks.TIED.get();
     }
 
     @Override

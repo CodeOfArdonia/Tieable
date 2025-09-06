@@ -1,5 +1,6 @@
 package com.iafenvoy.tieable.item.block;
 
+import com.iafenvoy.tieable.item.TiedBlockItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
@@ -15,14 +16,11 @@ public class TiedPillarBlock extends TiedBlock {
 
     public TiedPillarBlock() {
         this.setDefaultState(this.getDefaultState().with(AXIS, Direction.Axis.Y));
+        TiedBlockItem.register(AXIS, this);
     }
 
     @Override
     public BlockState rotate(BlockState state, BlockRotation rotation) {
-        return changeRotation(state, rotation);
-    }
-
-    public static BlockState changeRotation(BlockState state, BlockRotation rotation) {
         switch (rotation) {
             case COUNTERCLOCKWISE_90, CLOCKWISE_90 -> {
                 return switch (state.get(AXIS)) {

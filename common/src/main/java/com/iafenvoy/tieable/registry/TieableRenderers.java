@@ -6,6 +6,8 @@ import dev.architectury.registry.client.rendering.BlockEntityRendererRegistry;
 import dev.architectury.registry.client.rendering.RenderTypeRegistry;
 import net.minecraft.client.render.RenderLayer;
 
+import java.util.function.Supplier;
+
 public final class TieableRenderers {
     public static void registerRenderLayers() {
         RenderTypeRegistry.register(RenderLayer.getCutout(), TieableBlocks.TIED.get());
@@ -16,7 +18,6 @@ public final class TieableRenderers {
     }
 
     public static void registerItemRenderers() {
-        DynamicItemRenderer.RENDERERS.put(TieableBlocks.TIED.get().asItem(), new TiedBlockRenderer());
-        DynamicItemRenderer.RENDERERS.put(TieableBlocks.TIED_PILLAR.get().asItem(), new TiedBlockRenderer());
+        TieableBlocks.TIED_BLOCKS.stream().map(Supplier::get).forEach(x -> DynamicItemRenderer.RENDERERS.put(x.asItem(), new TiedBlockRenderer()));
     }
 }

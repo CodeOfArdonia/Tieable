@@ -2,27 +2,35 @@ package com.iafenvoy.tieable.item;
 
 import com.iafenvoy.tieable.item.block.entity.TiedBlockEntity;
 import com.iafenvoy.tieable.registry.TieableBlockEntities;
+import com.iafenvoy.tieable.registry.TieableBlocks;
 import com.iafenvoy.tieable.registry.tag.TieableItemTags;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.StackReference;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.state.property.Property;
 import net.minecraft.text.Text;
 import net.minecraft.util.ClickType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TiedBlockItem extends BlockItem {
+    private static final Map<Property<?>, ItemConvertible> PROPERTY_BLOCK_MAP = new HashMap<>();
+
     public TiedBlockItem(Block block, Settings settings) {
         super(block, settings);
     }
@@ -44,6 +52,16 @@ public class TiedBlockItem extends BlockItem {
         super.appendTooltip(stack, world, tooltip, options);
         Block block = readStoredBlock(stack);
         tooltip.add(Text.translatable("item.tieable.tied.tooltip", Text.translatable(block.getTranslationKey())));
+    }
+
+    public static void register(Property<?> property, ItemConvertible item) {
+        PROPERTY_BLOCK_MAP.put(property, item);
+    }
+
+    public static ItemStack createStack(Block block) {
+        BlockState state = block.getDefaultState();
+        ItemConvertible target = PROPERTY_BLOCK_MAP.entrySet().stream().filter(p -> state.contains(p.getKey())).findFirst().map(Map.Entry::getValue).orElse(TieableBlocks.TIED.get());
+        return writeBlockToNbt(new ItemStack(target), block);
     }
 
     public static ItemStack writeBlockToNbt(ItemStack stack, Block storedBlock) {
