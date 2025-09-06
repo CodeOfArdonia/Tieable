@@ -53,7 +53,7 @@ public class TiedBlockRenderer implements BlockEntityRenderer<TiedBlockEntity>, 
     @Override
     public void render(ItemStack stack, ModelTransformationMode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         if (this.client.cameraEntity != null)
-            this.render(TiedBlockItem.readStoredBlock(stack).getDefaultState(), this.client.cameraEntity.getBlockPos(), matrices, vertexConsumers, light, overlay);
+            this.render(TiedBlockItem.readStoredBlock(stack).storedBlock().getDefaultState(), this.client.cameraEntity.getBlockPos(), matrices, vertexConsumers, light, overlay);
     }
 
     private void render(BlockState state, BlockPos pos, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {

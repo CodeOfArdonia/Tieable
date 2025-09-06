@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 public final class TieableBlocks {
     public static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(Tieable.MOD_ID, RegistryKeys.BLOCK);
 

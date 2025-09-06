@@ -1,6 +1,7 @@
 package com.iafenvoy.tieable.item;
 
 import com.iafenvoy.tieable.item.block.entity.TiedBlockEntity;
+import com.iafenvoy.tieable.item.component.TieComponent;
 import com.iafenvoy.tieable.registry.TieableBlockEntities;
 import com.iafenvoy.tieable.registry.TieableBlocks;
 import com.iafenvoy.tieable.registry.tag.TieableItemTags;
@@ -10,10 +11,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.StackReference;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.screen.slot.Slot;
@@ -40,8 +38,9 @@ public class TiedBlockItem extends BlockItem {
         if (clickType == ClickType.RIGHT && slot.canTakePartial(player) && otherStack.isIn(TieableItemTags.CUT_ROPE)) {
             otherStack.damage(1, player, p -> p.sendToolBreakStatus(Hand.MAIN_HAND));
             ItemStack split = stack.split(1);
-            player.getInventory().offerOrDrop(new ItemStack(readStoredBlock(split).asItem(), 8));
-            player.getInventory().offerOrDrop(new ItemStack(Items.LEAD));
+            TieComponent component = readStoredBlock(split);
+            player.getInventory().offerOrDrop(new ItemStack(component.storedBlock(), 8));
+            player.getInventory().offerOrDrop(new ItemStack(component.rope()));
             return true;
         }
         return false;
@@ -50,30 +49,33 @@ public class TiedBlockItem extends BlockItem {
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext options) {
         super.appendTooltip(stack, world, tooltip, options);
-        Block block = readStoredBlock(stack);
-        tooltip.add(Text.translatable("item.tieable.tied.tooltip", Text.translatable(block.getTranslationKey())));
+        TieComponent component = readStoredBlock(stack);
+        tooltip.add(Text.translatable("item.tieable.tied.tooltip", Text.translatable(component.storedBlock().getTranslationKey())));
     }
 
     public static void register(Property<?> property, ItemConvertible item) {
         PROPERTY_BLOCK_MAP.put(property, item);
     }
 
-    public static ItemStack createStack(Block block) {
-        BlockState state = block.getDefaultState();
+    public static ItemStack createStack(TieComponent data) {
+        BlockState state = data.storedBlock().getDefaultState();
         ItemConvertible target = PROPERTY_BLOCK_MAP.entrySet().stream().filter(p -> state.contains(p.getKey())).findFirst().map(Map.Entry::getValue).orElse(TieableBlocks.TIED.get());
-        return writeBlockToNbt(new ItemStack(target), block);
+        return writeDataToStack(new ItemStack(target), data);
     }
 
-    public static ItemStack writeBlockToNbt(ItemStack stack, Block storedBlock) {
+    public static ItemStack writeDataToStack(ItemStack stack, TieComponent data) {
         NbtCompound nbt = new NbtCompound();
-        nbt.putString(TiedBlockEntity.STORED_BLOCK_KEY, Registries.BLOCK.getId(storedBlock).toString());
+        nbt.putString(TiedBlockEntity.STORED_BLOCK_KEY, Registries.BLOCK.getId(data.storedBlock()).toString());
+        nbt.putString(TiedBlockEntity.ROPE_KEY, Registries.ITEM.getId(data.rope()).toString());
         setBlockEntityNbt(stack, TieableBlockEntities.TIED.get(), nbt);
         return stack;
     }
 
-    public static Block readStoredBlock(ItemStack stack) {
+    public static TieComponent readStoredBlock(ItemStack stack) {
         NbtCompound nbt = getBlockEntityNbt(stack);
-        if (nbt == null) return Blocks.AIR;
-        return Registries.BLOCK.get(Identifier.tryParse(nbt.getString(TiedBlockEntity.STORED_BLOCK_KEY)));
+        if (nbt == null) return new TieComponent(Blocks.AIR, Items.AIR);
+        Block storedBlock = Registries.BLOCK.get(Identifier.tryParse(nbt.getString(TiedBlockEntity.STORED_BLOCK_KEY)));
+        Item rope = Registries.ITEM.get(Identifier.tryParse(nbt.getString(TiedBlockEntity.ROPE_KEY)));
+        return new TieComponent(storedBlock, rope);
     }
 }

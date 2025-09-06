@@ -3,6 +3,7 @@ package com.iafenvoy.tieable.recipe;
 import com.google.gson.JsonObject;
 import com.iafenvoy.tieable.Tieable;
 import com.iafenvoy.tieable.item.TiedBlockItem;
+import com.iafenvoy.tieable.item.component.TieComponent;
 import com.iafenvoy.tieable.registry.TieableBlocks;
 import com.iafenvoy.tieable.registry.tag.TieableItemTags;
 import net.minecraft.inventory.RecipeInputInventory;
@@ -35,8 +36,9 @@ public class TiedBlockRecipe implements CraftingRecipe {
 
     @Override
     public ItemStack craft(RecipeInputInventory inventory, DynamicRegistryManager registryManager) {
-        ItemStack stack = inventory.getStack(0);
-        if (stack.getItem() instanceof BlockItem blockItem) return TiedBlockItem.createStack(blockItem.getBlock());
+        ItemStack stored = inventory.getStack(0), rope = inventory.getStack(4);
+        if (stored.getItem() instanceof BlockItem blockItem)
+            return TiedBlockItem.createStack(new TieComponent(blockItem.getBlock(), rope.getItem()));
         return ItemStack.EMPTY;
     }
 

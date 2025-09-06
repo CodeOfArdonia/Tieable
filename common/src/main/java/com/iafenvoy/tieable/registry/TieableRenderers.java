@@ -18,6 +18,6 @@ public final class TieableRenderers {
     }
 
     public static void registerItemRenderers() {
-        TieableBlocks.TIED_BLOCKS.stream().map(Supplier::get).forEach(x -> DynamicItemRenderer.RENDERERS.put(x.asItem(), new TiedBlockRenderer()));
+        TieableBlocks.TIED_BLOCKS.stream().map(Supplier::get).forEach(b -> DynamicItemRenderer.RENDERERS.put(b.asItem(), new TiedBlockRenderer()));
     }
 }

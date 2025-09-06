@@ -1,10 +1,12 @@
 package com.iafenvoy.tieable;
 
 import com.iafenvoy.tieable.item.TiedBlockItem;
+import com.iafenvoy.tieable.item.component.TieComponent;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.RegistryEntryArgumentType;
+import net.minecraft.item.Items;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.command.ServerCommandSource;
@@ -24,7 +26,7 @@ public final class TieableCommand {
                             ServerPlayerEntity player = source.getPlayerOrThrow();
                             if (player.isCreative()) {
                                 RegistryEntry<Block> block = RegistryEntryArgumentType.getRegistryEntry(ctx, "block", RegistryKeys.BLOCK);
-                                player.getInventory().offerOrDrop(TiedBlockItem.createStack(block.value()));
+                                player.getInventory().offerOrDrop(TiedBlockItem.createStack(new TieComponent(block.value(), Items.LEAD)));
                                 return 1;
                             } else {
                                 source.sendMessage(Text.translatable("command.tieable.need_creative"));
