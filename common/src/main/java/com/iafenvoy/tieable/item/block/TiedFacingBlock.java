@@ -32,6 +32,7 @@ public class TiedFacingBlock extends TiedBlock {
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        super.appendProperties(builder);
         builder.add(FACING);
     }
 

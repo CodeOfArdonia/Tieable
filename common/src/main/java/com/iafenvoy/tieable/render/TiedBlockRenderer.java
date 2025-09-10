@@ -9,6 +9,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
@@ -17,6 +18,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -25,13 +27,14 @@ import net.minecraft.util.math.Vec3d;
 @Environment(EnvType.CLIENT)
 public class TiedBlockRenderer implements BlockEntityRenderer<TiedBlockEntity>, DynamicItemRenderer {
     private static final Identifier BASE_TEXTURE = Identifier.of(Tieable.MOD_ID, "textures/entity/tied.png");
-    private static final Vec3d[] OFFSETS = new Vec3d[]{
+    private static final Vec3d[] LOWER_OFFSETS = new Vec3d[]{
             new Vec3d(0, 0, 0),
             new Vec3d(1, 0, 0),
-            new Vec3d(0, 1, 0),
-            new Vec3d(1, 1, 0),
             new Vec3d(0, 0, 1),
             new Vec3d(1, 0, 1),
+    }, UPPER_OFFSETS = new Vec3d[]{
+            new Vec3d(0, 1, 0),
+            new Vec3d(1, 1, 0),
             new Vec3d(0, 1, 1),
             new Vec3d(1, 1, 1),
     };
@@ -60,8 +63,11 @@ public class TiedBlockRenderer implements BlockEntityRenderer<TiedBlockEntity>, 
         matrices.push();
         this.renderBlock(matrices, vertexConsumers, light, overlay);
         matrices.scale(0.5F, 0.5F, 0.5F);
-        for (Vec3d offset : OFFSETS)
+        BlockState upper = state.contains(Properties.DOUBLE_BLOCK_HALF) ? state.with(Properties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER) : state;
+        for (Vec3d offset : LOWER_OFFSETS)
             this.renderSingle(state, pos, offset, matrices, vertexConsumers);
+        for (Vec3d offset : UPPER_OFFSETS)
+            this.renderSingle(upper, pos, offset, matrices, vertexConsumers);
         matrices.pop();
     }
 
