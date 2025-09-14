@@ -3,6 +3,7 @@
   "block.tieable.tied_facing": "Tied Block",
   "block.tieable.tied_horizontal": "Tied Block",
   "block.tieable.tied_pillar": "Tied Block",
-  "item.tieable.tied.tooltip": "Stored Block: %s",
-  "command.tieable.need_creative": "You need to be in the creative mode to use this command!"
+  "block.tieable.tied_skull": "Tied Block",
+  "command.tieable.need_creative": "You need to be in the creative mode to use this command!",
+  "item.tieable.tied.tooltip": "Stored Block: %s"
 }

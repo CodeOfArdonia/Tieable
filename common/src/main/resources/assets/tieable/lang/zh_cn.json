@@ -1,0 +1,9 @@
+{
+  "block.tieable.tied": "捆扎方块",
+  "block.tieable.tied_facing": "捆扎方块",
+  "block.tieable.tied_horizontal": "捆扎方块",
+  "block.tieable.tied_pillar": "捆扎方块",
+  "block.tieable.tied_skull": "捆扎方块",
+  "command.tieable.need_creative": "你需要在创造模式才能运行此命令！",
+  "item.tieable.tied.tooltip": "捆扎的方块：%s"
+}

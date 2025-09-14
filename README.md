@@ -14,7 +14,8 @@ You can also use `/tieable <block>` in creative mode to obtain.
 
 To extract them, use shears on blocks or right-click the blocks with shears in inventory.
 
-Some blocks will inherit their block states. Currently implemented: Axis, Facing, Waterlogged, Double Block Half.
+Some blocks will inherit their block states. Currently implemented: Axis, Facing, Waterlogged, Double Block Half, Skull
+Block Rotation.
 
 ## Important Notice
 
