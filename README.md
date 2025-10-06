@@ -17,6 +17,17 @@ To extract them, use shears on blocks or right-click the blocks with shears in i
 Some blocks will inherit their block states. Currently implemented: Axis, Facing, Waterlogged, Double Block Half, Skull
 Block Rotation.
 
+### Configuration
+
+Create file `.minecraft/config/tieable.json` (may exist).
+
+```json5
+{
+  "shearsUntieOnBlocks": true,
+  "shearsUntieOnItems": true
+}
+```
+
 ## Important Notice
 
 - This mod use a universal and complex rendering system to grant high capability. Client may lag when tons of tied block

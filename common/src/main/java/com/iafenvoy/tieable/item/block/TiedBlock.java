@@ -1,5 +1,6 @@
 package com.iafenvoy.tieable.item.block;
 
+import com.iafenvoy.tieable.config.TieableConfig;
 import com.iafenvoy.tieable.item.block.entity.TiedBlockEntity;
 import com.iafenvoy.tieable.registry.TieableBlocks;
 import com.iafenvoy.tieable.registry.tag.TieableItemTags;
@@ -40,7 +41,7 @@ public class TiedBlock extends BlockWithEntity implements Waterloggable {
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (player.getStackInHand(hand).isIn(TieableItemTags.CUT_ROPE) && world.getBlockEntity(pos) instanceof TiedBlockEntity tied) {
+        if (TieableConfig.INSTANCE.shearsUntieOnBlocks && player.getStackInHand(hand).isIn(TieableItemTags.CUT_ROPE) && world.getBlockEntity(pos) instanceof TiedBlockEntity tied) {
             dropStack(world, pos, new ItemStack(tied.getStoredBlock().asItem(), 8));
             dropStack(world, pos, new ItemStack(Items.LEAD));
             if (!world.isClient) world.breakBlock(pos, false);

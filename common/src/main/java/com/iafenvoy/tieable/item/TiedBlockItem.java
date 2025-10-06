@@ -1,5 +1,6 @@
 package com.iafenvoy.tieable.item;
 
+import com.iafenvoy.tieable.config.TieableConfig;
 import com.iafenvoy.tieable.item.block.entity.TiedBlockEntity;
 import com.iafenvoy.tieable.item.component.TieComponent;
 import com.iafenvoy.tieable.registry.TieableBlockEntities;
@@ -35,7 +36,7 @@ public class TiedBlockItem extends BlockItem {
 
     @Override
     public boolean onClicked(ItemStack stack, ItemStack otherStack, Slot slot, ClickType clickType, PlayerEntity player, StackReference cursorStackReference) {
-        if (clickType == ClickType.RIGHT && slot.canTakePartial(player) && otherStack.isIn(TieableItemTags.CUT_ROPE)) {
+        if (TieableConfig.INSTANCE.shearsUntieOnItems && clickType == ClickType.RIGHT && slot.canTakePartial(player) && otherStack.isIn(TieableItemTags.CUT_ROPE)) {
             otherStack.damage(1, player, p -> p.sendToolBreakStatus(Hand.MAIN_HAND));
             ItemStack split = stack.split(1);
             TieComponent component = readStoredBlock(split);
