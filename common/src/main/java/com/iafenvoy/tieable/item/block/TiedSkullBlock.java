@@ -11,7 +11,6 @@ import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.RotationPropertyHelper;
 
-@SuppressWarnings("deprecation")
 public class TiedSkullBlock extends TiedBlock {
     public static final int MAX_ROTATION_INDEX = RotationPropertyHelper.getMax();
     private static final int MAX_ROTATIONS = MAX_ROTATION_INDEX + 1;

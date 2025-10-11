@@ -5,7 +5,7 @@ import com.iafenvoy.tieable.item.component.TieComponent;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.argument.RegistryEntryArgumentType;
+import net.minecraft.command.argument.RegistryEntryReferenceArgumentType;
 import net.minecraft.item.Items;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -20,12 +20,12 @@ public final class TieableCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess access) {
         dispatcher.register(literal("tieable")
                 .requires(ServerCommandSource::isExecutedByPlayer)
-                .then(argument("block", RegistryEntryArgumentType.registryEntry(access, RegistryKeys.BLOCK))
+                .then(argument("block", RegistryEntryReferenceArgumentType.registryEntry(access, RegistryKeys.BLOCK))
                         .executes(ctx -> {
                             ServerCommandSource source = ctx.getSource();
                             ServerPlayerEntity player = source.getPlayerOrThrow();
                             if (player.isCreative()) {
-                                RegistryEntry<Block> block = RegistryEntryArgumentType.getRegistryEntry(ctx, "block", RegistryKeys.BLOCK);
+                                RegistryEntry<Block> block = RegistryEntryReferenceArgumentType.getRegistryEntry(ctx, "block", RegistryKeys.BLOCK);
                                 player.getInventory().offerOrDrop(TiedBlockItem.createStack(new TieComponent(block.value(), Items.LEAD)));
                                 return 1;
                             } else {

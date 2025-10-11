@@ -11,7 +11,6 @@ import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.Direction;
 
-@SuppressWarnings("deprecation")
 public class TiedFacingBlock extends TiedBlock {
     public static final DirectionProperty FACING = Properties.FACING;
 

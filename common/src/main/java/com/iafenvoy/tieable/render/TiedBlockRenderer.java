@@ -11,6 +11,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -56,7 +57,7 @@ public class TiedBlockRenderer implements BlockEntityRenderer<TiedBlockEntity>, 
     @Override
     public void render(ItemStack stack, ModelTransformationMode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         if (this.client.cameraEntity != null)
-            this.render(TiedBlockItem.readStoredBlock(stack).storedBlock().getDefaultState(), this.client.cameraEntity.getBlockPos(), matrices, vertexConsumers, light, overlay);
+            this.render(TiedBlockItem.readStoredBlock(stack).storedBlock().getDefaultState(), this.client.cameraEntity.getBlockPos(), matrices, vertexConsumers, LightmapTextureManager.MAX_LIGHT_COORDINATE, overlay);
     }
 
     private void render(BlockState state, BlockPos pos, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
@@ -73,7 +74,7 @@ public class TiedBlockRenderer implements BlockEntityRenderer<TiedBlockEntity>, 
 
     private void renderBlock(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         matrices.push();
-        this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(BASE_TEXTURE)), light, overlay, 1, 1, 1, 1);
+        this.model.render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntityCutout(BASE_TEXTURE)), light, overlay, -1);
         matrices.pop();
     }
 

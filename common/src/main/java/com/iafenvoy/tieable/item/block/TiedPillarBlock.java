@@ -10,7 +10,6 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.Direction;
 
-@SuppressWarnings("deprecation")
 public class TiedPillarBlock extends TiedBlock {
     public static final EnumProperty<Direction.Axis> AXIS = Properties.AXIS;
 

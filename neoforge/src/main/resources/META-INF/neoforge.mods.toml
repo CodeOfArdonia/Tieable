@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[47,)"
+loaderVersion = "[2,)"
 issueTrackerURL = "https://github.com/IAFEnvoy/Tieable/issues"
 license = "All Right Reserved"
 
@@ -14,22 +14,25 @@ Add universal tied blocks for decoration.
 logoFile = "logo.png"
 
 [[dependencies.tieable]]
-modId = "forge"
+modId = "neoforge"
 mandatory = true
-versionRange = "[47,)"
+versionRange = "[21.1,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.tieable]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.20.1,1.20.5)"
+versionRange = "[1.21,1.21.2)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.tieable]]
 modId = "architectury"
 mandatory = true
-versionRange = "[9.2.14,)"
+versionRange = "[0,)"
 ordering = "AFTER"
 side = "BOTH"
+
+[[mixins]]
+config = "tieable.mixins.json"
